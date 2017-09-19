@@ -77,7 +77,6 @@ namespace boost {
 namespace detail {
 namespace winapi {
 #if defined( BOOST_USE_WINDOWS_H )
-
 typedef ::BOOL BOOL_;
 typedef ::PBOOL PBOOL_;
 typedef ::LPBOOL LPBOOL_;
@@ -86,6 +85,8 @@ typedef ::PBOOLEAN PBOOLEAN_;
 typedef ::BYTE BYTE_;
 typedef ::PBYTE PBYTE_;
 typedef ::LPBYTE LPBYTE_;
+typedef ::UCHAR UCHAR_;
+typedef ::PUCHAR PUCHAR_;
 typedef ::WORD WORD_;
 typedef ::PWORD PWORD_;
 typedef ::LPWORD LPWORD_;
@@ -108,6 +109,8 @@ typedef ::PLONG PLONG_;
 typedef ::LPLONG LPLONG_;
 typedef ::ULONG ULONG_;
 typedef ::PULONG PULONG_;
+typedef ::LONGLONG ULONG64_;
+typedef ::ULONGLONG PULONG64_;
 typedef ::LONGLONG LONGLONG_;
 typedef ::ULONGLONG ULONGLONG_;
 typedef ::INT_PTR INT_PTR_;
@@ -131,6 +134,11 @@ typedef ::WCHAR WCHAR_;
 typedef ::LPWSTR LPWSTR_;
 typedef ::LPCWSTR LPCWSTR_;
 
+#ifndef _NTDEF_
+typedef ::LONG NTSTATUS;
+typedef NTSTATUS *PNTSTATUS;
+#endif
+
 #else // defined( BOOST_USE_WINDOWS_H )
 
 typedef int BOOL_;
@@ -139,6 +147,8 @@ typedef BOOL_* LPBOOL_;
 typedef unsigned char BYTE_;
 typedef BYTE_* PBYTE_;
 typedef BYTE_* LPBYTE_;
+typedef unsigned char UCHAR_;
+typedef UCHAR_* PUCHAR_;
 typedef BYTE_ BOOLEAN_;
 typedef BOOLEAN_* PBOOLEAN_;
 typedef unsigned short WORD_;
@@ -164,6 +174,8 @@ typedef LONG_* PLONG_;
 typedef LONG_* LPLONG_;
 typedef unsigned long ULONG_;
 typedef ULONG_* PULONG_;
+typedef boost::uint64_t ULONG64_;
+typedef ULONG64_ * PULONG64_;
 
 typedef boost::int64_t LONGLONG_;
 typedef boost::uint64_t ULONGLONG_;
@@ -203,6 +215,9 @@ typedef const CHAR_ *LPCSTR_;
 typedef wchar_t WCHAR_;
 typedef WCHAR_ *LPWSTR_;
 typedef const WCHAR_ *LPCWSTR_;
+
+typedef long NTSTATUS_;
+typedef NTSTATUS_ * PNTSTATUS_;
 
 #endif // defined( BOOST_USE_WINDOWS_H )
 

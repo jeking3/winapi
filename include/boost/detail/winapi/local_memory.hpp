@@ -16,22 +16,26 @@
 #pragma once
 #endif
 
+#if BOOST_WINAPI_PARTITION_DESKTOP_STORE
+
 #if !defined( BOOST_USE_WINDOWS_H )
 namespace boost { namespace detail { namespace winapi {
 typedef HANDLE_ HLOCAL_;
 }}}
 
 extern "C" {
-BOOST_SYMBOL_IMPORT boost::detail::winapi::HLOCAL_ WINAPI
-LocalAlloc(
-    boost::detail::winapi::UINT_ uFlags,
-    boost::detail::winapi::SIZE_T_ uBytes);
-BOOST_SYMBOL_IMPORT boost::detail::winapi::HLOCAL_ WINAPI
-LocalReAlloc(
-    boost::detail::winapi::HLOCAL_ hMem,
-    boost::detail::winapi::SIZE_T_ uBytes,
-    boost::detail::winapi::UINT_ uFlags);
-BOOST_SYMBOL_IMPORT boost::detail::winapi::HLOCAL_ WINAPI LocalFree(boost::detail::winapi::HLOCAL_ hMem);
+    BOOST_SYMBOL_IMPORT boost::detail::winapi::HLOCAL_ WINAPI
+        LocalAlloc(
+            boost::detail::winapi::UINT_ uFlags,
+            boost::detail::winapi::SIZE_T_ uBytes);
+    BOOST_SYMBOL_IMPORT boost::detail::winapi::HLOCAL_ WINAPI
+        LocalFree(
+            boost::detail::winapi::HLOCAL_ hMem);
+    BOOST_SYMBOL_IMPORT boost::detail::winapi::HLOCAL_ WINAPI
+        LocalReAlloc(
+            boost::detail::winapi::HLOCAL_ hMem,
+            boost::detail::winapi::SIZE_T_ uBytes,
+            boost::detail::winapi::UINT_ uFlags);
 }
 #endif
 
@@ -48,4 +52,5 @@ using ::LocalFree;
 }
 }
 
+#endif // BOOST_WINAPI_PARTITION_DESKTOP_STORE
 #endif // BOOST_DETAIL_WINAPI_LOCAL_MEMORY_HPP

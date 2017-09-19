@@ -16,6 +16,8 @@
 #pragma once
 #endif
 
+#if BOOST_WINAPI_PARTITION_DESKTOP_STORE
+
 #if !defined( BOOST_USE_WINDOWS_H )
 extern "C" {
 struct _ACL;
@@ -77,4 +79,5 @@ BOOST_FORCEINLINE BOOL_ SetSecurityDescriptorDacl(PSECURITY_DESCRIPTOR_ pSecurit
 }
 }
 
+#endif // BOOST_WINAPI_PARTITION_DESKTOP_STORE
 #endif // BOOST_DETAIL_WINAPI_SECURITY_HPP
