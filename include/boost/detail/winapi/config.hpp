@@ -1,6 +1,7 @@
 //  config.hpp  --------------------------------------------------------------//
 
 //  Copyright 2013 Andrey Semashev
+//  Copyright 2017 James E. King, III
 
 //  Distributed under the Boost Software License, Version 1.0.
 //  See http://www.boost.org/LICENSE_1_0.txt
@@ -126,6 +127,71 @@
 #endif
 #endif
 
+#if !defined(BOOST_USE_WINAPI_FAMILY)
+#if defined(WINAPI_FAMILY)
+#define BOOST_USE_WINAPI_FAMILY WINAPI_FAMILY
+#else if defined(WINAPI_FAMILY_DESKTOP_APP)
+// If none is specified, default to a desktop application which is the most
+// backwards compatible to previos ways of doing things, if families are even
+// defined.
+#define BOOST_USE_WINAPI_FAMILY WINAPI_FAMILY_DESKTOP_APP
+#endif
+#endif
+
+//
+// Detect the version of the Windows SDK in use
+// This is necessary to handle SDK family changes
+// between SDK 8.x and 10.0 from Microsoft.
+//
+
+#if !defined(BOOST_WINAPI_IS_MINGW)
+#include <ntverp.h>
+#define BOOST_WINAPI_WINDOWS_SDK            VER_PRODUCTBUILD
+#else
+#define BOOST_WINAPI_WINDOWS_SDK            0
+#endif
+
+// These constants reflect known kit versions
+#define BOOST_WINAPI_WINDOWS_SDK_MINGW_W64  3790    /* https://github.com/Alexpux/mingw-w64/blame/master/mingw-w64-headers/include/ntverp.h */
+#define BOOST_WINAPI_WINDOWS_SDK_7          7600    /* covers 7.0, 7.1A */
+#define BOOST_WINAPI_WINDOWS_SDK_8          9200
+#define BOOST_WINAPI_WINDOWS_SDK_8_1        9600
+#define BOOST_WINAPI_WINDOWS_SDK_10         10011   /* covers all 10.0.<buildnum> */
+
+//
+// UWP Support
+//
+// On platforms without windows family partition support it is assumed one 
+// has all APIs and access is controlled by _WIN32_WINNT or similar mechanisms.
+//
+// Leveraging Boost.Predef here
+//
+
+#if defined(BOOST_WINAPI_IS_MINGW_W64) || (BOOST_WINAPI_WINDOWS_SDK >= BOOST_WINAPI_WINDOWS_SDK_8)
+#include <winapifamily.h>
+#elif defined(BOOST_PREDEF_PLAT_WINDOWS_DESKTOP_H)
+#error "boost/predef/platform.h was included before <winapifamily.h> from the vendor SDK which leads to incorrect WINAPI_FAMILY detection"
+#endif
+
+#include <boost/predef/platform.h>
+
+#define BOOST_WINAPI_PARTITION_APP           (BOOST_PLAT_WINDOWS_DESKTOP || BOOST_PLAT_WINDOWS_RUNTIME)
+#define BOOST_WINAPI_PARTITION_PC            (BOOST_PLAT_WINDOWS_STORE)
+#define BOOST_WINAPI_PARTITION_PHONE         (BOOST_PLAT_WINDOWS_PHONE)
+#define BOOST_WINAPI_PARTITION_SYSTEM        (0) /* no support in predef */
+#define BOOST_WINAPI_PARTITION_DESKTOP       (BOOST_PLAT_WINDOWS_DESKTOP)
+//
+// Windows 8.x SDK defines some items in the DESKTOP partition and then Windows SDK 10.0 defines 
+// the same items to be in APP or SYSTEM partitions, and APP expands to DESKTOP or PC or PHONE.  
+// The definition of BOOST_WINAPI_PARTITION_DESKTOP_STORE provides a universal way to get this 
+// right as it is seen in a number of places in the SDK.
+//
+
+#define BOOST_WINAPI_PARTITION_DESKTOP_STORE ( \
+        ((BOOST_WINAPI_WINDOWS_SDK >= BOOST_WINAPI_WINDOWS_SDK_10) && (BOOST_WINAPI_PARTITION_APP || BOOST_WINAPI_PARTITION_SYSTEM)) || \
+        ((BOOST_WINAPI_WINDOWS_SDK < BOOST_WINAPI_WINDOWS_SDK_10) && BOOST_WINAPI_PARTITION_DESKTOP) \
+    )
+
 #if defined(BOOST_USE_WINDOWS_H) || defined(BOOST_WINAPI_DEFINE_VERSION_MACROS)
 // We have to define the version macros so that windows.h provides the necessary symbols
 #if !defined(_WIN32_WINNT)
@@ -136,6 +202,9 @@
 #endif
 #if !defined(NTDDI_VERSION)
 #define NTDDI_VERSION BOOST_USE_NTDDI_VERSION
+#endif
+#if !defined(WINAPI_FAMILY) && defined(BOOST_USE_WINAPI_FAMILY)
+#define WINAPI_FAMILY BOOST_USE_WINAPI_FAMILY
 #endif
 #endif
 

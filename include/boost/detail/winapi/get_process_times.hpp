@@ -18,6 +18,8 @@
 // Windows CE does not define GetProcessTimes
 #if !defined( UNDER_CE )
 
+#if BOOST_WINAPI_PARTITION_DESKTOP_STORE
+
 #include <boost/detail/winapi/basic_types.hpp>
 #include <boost/detail/winapi/time.hpp>
 
@@ -56,5 +58,6 @@ BOOST_FORCEINLINE BOOL_ GetProcessTimes(
 }
 }
 
+#endif // BOOST_WINAPI_PARTITION_DESKTOP_STORE
 #endif // !defined( UNDER_CE )
 #endif // BOOST_DETAIL_WINAPI_GET_PROCESS_TIMES_HPP

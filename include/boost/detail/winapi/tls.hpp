@@ -15,6 +15,8 @@
 #pragma once
 #endif
 
+#if BOOST_WINAPI_PARTITION_DESKTOP_STORE
+
 #if !defined( BOOST_USE_WINDOWS_H )
 extern "C" {
 #if !defined( UNDER_CE )
@@ -57,4 +59,5 @@ const DWORD_ tls_out_of_indexes = TLS_OUT_OF_INDEXES_;
 }
 }
 
+#endif // BOOST_WINAPI_PARTITION_DESKTOP_STORE
 #endif // BOOST_DETAIL_WINAPI_TLS_HPP
